@@ -26,4 +26,6 @@ public:
 private:
 	FRotator doorRotation;
 	float rotationLerp;
+	UPROPERTY(EditAnywhere)
+	ATriggerVolume* triggerVolume;
 };
