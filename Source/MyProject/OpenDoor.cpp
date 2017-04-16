@@ -12,6 +12,8 @@ UOpenDoor::UOpenDoor()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
+	doorRotation = FRotator(0.0f, -90.0f, 0.0f);
+	rotationLerp = 0.0f;
 }
 
 
@@ -19,10 +21,6 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	FRotator doorRotation = FRotator(0.0f, 90.0f, 0.0f);
-	GetOwner()->SetActorRotation(doorRotation);
 }
 
 
@@ -30,7 +28,12 @@ void UOpenDoor::BeginPlay()
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (rotationLerp < 1.0f)
+	{
+		rotationLerp += DeltaTime;
+		GetOwner()->SetActorRotation(doorRotation * rotationLerp);
 
+	}
 	// ...
 }
 
