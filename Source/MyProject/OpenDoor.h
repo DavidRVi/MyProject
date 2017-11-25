@@ -18,14 +18,19 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	void OpenDoor(float DeltaTime);
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+	UPROPERTY(VisibleAnywhere)
+	AActor* openerPawn;
 	FRotator doorRotation;
 	float rotationLerp;
+	bool _opened;
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* triggerVolume;
+
 };

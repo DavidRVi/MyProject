@@ -20,20 +20,42 @@ UOpenDoor::UOpenDoor()
 // Called when the game starts
 void UOpenDoor::BeginPlay()
 {
+	_opened = false;
 	Super::BeginPlay();
+	openerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
+void UOpenDoor::OpenDoor(float DeltaTime)
+{
+	rotationLerp += DeltaTime;
+	rotationLerp = FMath::Clamp(rotationLerp, 0.0f, 1.0f);
+
+	if (rotationLerp >= 0.0f && rotationLerp < 1.0f)
+	{
+		_opened = false;
+		rotationLerp += DeltaTime;
+		GetOwner()->SetActorRotation(doorRotation * rotationLerp);
+	}
+	else if (rotationLerp >= 1.0f)
+	{
+		GetOwner()->SetActorRotation(doorRotation);
+		_opened = true;
+	}
+}
 
 // Called every frame
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (rotationLerp < 1.0f)
-	{
-		rotationLerp += DeltaTime;
-		GetOwner()->SetActorRotation(doorRotation * rotationLerp);
 
-	}
 	// ...
+	if (triggerVolume->IsOverlappingActor(openerPawn))
+	{
+		if(!_opened)
+			OpenDoor(DeltaTime);
+	}
+	else {
+		OpenDoor(-DeltaTime);
+	}
 }
 
